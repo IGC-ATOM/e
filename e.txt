@@ -1,0 +1,634 @@
+Form In Servlate:
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+		<form action="App">
+		<table>
+		
+				<tr>
+					<td><label>Name:</label></td>
+					<td><input type="text" name="Fname"></td>	
+				</tr>
+				
+				<tr>
+					<td><label>Password:</label></td>
+					<td><input type="password" name="Pass"></td>
+				</tr>
+				
+				<tr>
+				<td><input type="submit"></td>				
+				</tr>
+				
+		</table>
+	</form>
+	
+</body>
+</html>
+
+	
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/App")
+public class App extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+    public App() {}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		PrintWriter out = response.getWriter();
+		
+		String name = request.getParameter("Fname");
+		String pas = request.getParameter("Pass");
+		
+		response.setContentType("text/html");
+		
+		out.println();
+		
+		if ("parth".equals(name) && "123".equals(pas)) {
+			
+			out.print("welcom"+" "+name);
+		}
+		else {
+			
+			out.print("The Username and Password is Wrong");
+		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+}
+
+
+
+Cookies:
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<form action="Cooki" method="get">
+
+
+		<input type="submit" name="action" value="add cooki"> <input
+			type="submit" name="action" value="display cooki"> <input
+			type="submit" name="action" value="delete cooki">
+
+	</form>
+</body>
+</html>
+
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/Cooki")
+public class Cooki extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	public Cooki() {
+		super();
+
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+
+		String action = request.getParameter("action");
+		
+		if("add cooki".equals(action)) {
+			doadd(request, response);
+		}
+		
+		else if("display cooki".equals(action)) {
+			dodesplay(request, response);
+		
+		}
+		else if("delete cooki".equals(action)) {
+			dodelete(request, response);
+		
+		}
+		
+		
+
+	}
+
+	protected void doadd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+	
+		Cookie c = new Cookie("Parth","Rajput");
+		c.setMaxAge(60*60);
+		response.addCookie(c);
+		out.println("Cookies Added");
+	}
+
+	protected void dodesplay(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+		
+		Cookie [] c = request.getCookies();
+		if(c != null) {
+			for(Cookie c2 : c) {
+			out.println(c2.getName());
+			out.println(c2.getValue());
+			}
+		}else {
+			out.println("Cookie Not Found");
+		}
+		
+		
+	}
+
+	protected void dodelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+		
+		Cookie [] c = request.getCookies();
+		
+		if(c != null) {
+			for(Cookie c2 : c) {
+				c2.setMaxAge(0);
+				response.addCookie(c2);
+				out.println("Cookie deleted");
+			}
+			out.println("<a href='Index.html'>Go back</a>");
+		}else {
+			out.println("Cookie Not Found");
+		}
+	
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		doGet(request, response);
+	}
+
+}
+
+
+
+Factorial in servlet:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Factorial Calculator</title>
+</head>
+<body>
+    <h1>Factorial Calculator</h1>
+    <form action="FactorialServlet" method="post">
+        <label for="number">Enter a numeric value:</label>
+        <input type="number" id="number" name="number"><br><br>
+        <input type="submit" value="Calculate Factorial">
+    </form>
+</body>
+</html>
+
+
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.*;
+
+@WebServlet(name = "FactorialServlet", urlPatterns = {"/FactorialServlet"})
+public class App extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int number = Integer.parseInt(request.getParameter("number"));
+        long factorial = calculateFactorial(number);
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Factorial Result</h1>");
+        out.println("<p>The factorial of " + number + " is: " + factorial + "</p>");
+        out.println("</body></html>");
+    }
+
+    private long calculateFactorial(int number) {
+        long factorial = 1;
+        for (int i = 1; i <= number; i++) {
+            factorial *= i;
+        }
+        return factorial;
+    }
+    
+}
+
+
+
+Cylinder Calculator:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cylinder Calculator</title>
+</head>
+<body>
+    <h1>Cylinder Calculator</h1>
+    <form action="CylinderServlet" method="post">
+        <label for="radius">Enter the radius (r) of the cylinder:</label>
+        <input type="number" id="radius" name="radius"><br><br>
+        <label for="height">Enter the height (h) of the cylinder:</label>
+        <input type="number" id="height" name="height"><br><br>
+        <input type="submit" value="Calculate Volume and Surface Area">
+    </form>
+</body>
+</html>
+
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.*;
+
+@WebServlet(name = "CylinderServlet", urlPatterns = {"/CylinderServlet"})
+public class App extends HttpServlet {
+    private static final double PI = 3.14159; // constant variable for π
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        double radius = Double.parseDouble(request.getParameter("radius"));
+        double height = Double.parseDouble(request.getParameter("height"));
+
+        double volume = calculateVolume(radius, height);
+        double surfaceArea = calculateSurfaceArea(radius, height);
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Cylinder Calculator Result</h1>");
+        out.println("<p>The volume of the cylinder is: " + volume + "</p>");
+        out.println("<p>The surface area of the cylinder is: " + surfaceArea + "</p>");
+        out.println("</body></html>");
+    }
+
+    private double calculateVolume(double radius, double height) {
+        return PI * Math.pow(radius, 2) * height;
+    }
+
+    private double calculateSurfaceArea(double radius, double height) {
+        return 2 * PI * radius * (radius + height);
+    }
+}
+
+
+
+Palindrome:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Palindrome Checker</title>
+</head>
+<body>
+    <h1>Palindrome Checker</h1>
+    <form action="PalindromeServlet" method="post">
+        <label for="inputString">Enter a string:</label>
+        <input type="text" id="inputString" name="inputString"><br><br>
+        <input type="submit" value="Check if Palindrome">
+    </form>
+</body>
+</html>
+
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.*;
+
+@WebServlet(name = "PalindromeServlet", urlPatterns = {"/PalindromeServlet"})
+public class App extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String inputString = request.getParameter("inputString");
+
+        boolean isPalindrome = isPalindrome(inputString);
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Palindrome Checker Result</h1>");
+        if (isPalindrome) {
+            out.println("<p>The string '" + inputString + "' is a palindrome.</p>");
+        } else {
+            out.println("<p>The string '" + inputString + "' is not a palindrome.</p>");
+        }
+        out.println("</body></html>");
+    }
+
+    private boolean isPalindrome(String inputString) {
+        int left = 0;
+        int right = inputString.length() - 1;
+
+        while (left < right) {
+            if (inputString.charAt(left) != inputString.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+
+
+
+Number Reverser:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Number Reverser</title>
+</head>
+<body>
+    <h1>Number Reverser</h1>
+    <form action="ReverseNumberServlet" method="post">
+        <label for="inputNumber">Enter a number:</label>
+        <input type="number" id="inputNumber" name="inputNumber"><br><br>
+        <input type="submit" value="Reverse Number">
+    </form>
+</body>
+</html>
+
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.*;
+
+@WebServlet(name = "ReverseNumberServlet", urlPatterns = {"/ReverseNumberServlet"})
+public class App extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int inputNumber = Integer.parseInt(request.getParameter("inputNumber"));
+
+        int reversedNumber = reverseNumber(inputNumber);
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Number Reverser Result</h1>");
+        out.println("<p>The reversed number is: " + reversedNumber + "</p>");
+        out.println("</body></html>");
+    }
+
+    private int reverseNumber(int inputNumber) {
+        int reversedNumber = 0;
+        while (inputNumber != 0) {
+            int remainder = inputNumber % 10;
+            reversedNumber = reversedNumber * 10 + remainder;
+            inputNumber /= 10;
+        }
+        return reversedNumber;
+    }
+}
+
+
+
+Random Number:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Number List Generator</title>
+</head>
+<body>
+    <h1>Random Number List Generator</h1>
+    <form action="RandomNumberListServlet" method="post">
+        <label for="listSize">Enter the number of list elements:</label>
+        <input type="number" id="listSize" name="listSize"><br><br>
+        <input type="submit" value="Generate Random Number List">
+    </form>
+</body>
+</html>
+
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.Random;
+
+@WebServlet(name = "RandomNumberListServlet", urlPatterns = {"/RandomNumberListServlet"})
+public class App extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int listSize = Integer.parseInt(request.getParameter("listSize"));
+
+        Random random = new Random();
+        double[] randomNumberList = new double[listSize];
+        for (int i = 0; i < listSize; i++) {
+            randomNumberList[i] = random.nextDouble();
+        }
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Random Number List Generator Result</h1>");
+        out.println("<ul>");
+        for (double randomNumber : randomNumberList) {
+            out.println("<li>" + randomNumber + "</li>");
+        }
+        out.println("</ul>");
+        out.println("</body></html>");
+    }
+}
+
+
+Array Sorter:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Array Sorter</title>
+</head>
+<body>
+    <h1>Array Sorter</h1>
+    <form action="ArraySortServlet" method="post">
+        <label for="arrayElements">Enter array elements (comma separated):</label>
+        <input type="text" id="arrayElements" name="arrayElements"><br><br>
+        <input type="submit" value="Sort Array">
+    </form>
+</body>
+</html>
+
+
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+@WebServlet(name = "ArraySortServlet", urlPatterns = {"/ArraySortServlet"})
+public class App extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String arrayElements = request.getParameter("arrayElements");
+
+        StringTokenizer tokenizer = new StringTokenizer(arrayElements, ",");
+        int arraySize = tokenizer.countTokens();
+        int[] array = new int[arraySize];
+        for (int i = 0; i < arraySize; i++) {
+            array[i] = Integer.parseInt(tokenizer.nextToken());
+        }
+
+        Arrays.sort(array);
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>Array Sorter Result</h1>");
+        out.println("<p>The sorted array is: ");
+        for (int element : array) {
+            out.println(element + " ");
+        }
+        out.println("</p>");
+        out.println("</body></html>");
+    }
+}
+
+
+jsp
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Display Message</title>
+</head>
+<body>
+    <h2>Enter a Message</h2>
+
+    <!-- HTML Form to accept a message -->
+    <form method="post">
+        <label for="userMessage">Message:</label><br>
+        <input type="text" id="userMessage" name="userMessage" placeholder="Enter your message" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <hr>
+
+    <!-- Display the message after form submission -->
+    <%
+        // Retrieving the user input from the form
+        String userMessage = request.getParameter("userMessage");
+
+        // Display the message if the user has entered one
+        if (userMessage != null && !userMessage.trim().isEmpty()) {
+    %>
+        <h3>Message from User:</h3>
+        <p><%= userMessage %></p>
+    <%
+        }
+    %>
+</body>
+</html>
+
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Number Generator</title>
+</head>
+<body>
+    <h1>Random Number Generator</h1>
+    <%
+        int[] randomNumbers = new int[8];
+        for (int i = 0; i < 8; i++) {
+            randomNumbers[i] = (int) (Math.random() * 100); // generate random numbers between 0 and 99
+        }
+        
+        int max = randomNumbers[0];
+        int min = randomNumbers[0];
+        
+        for (int i = 1; i < 8; i++) {
+            if (randomNumbers[i] > max) {
+                max = randomNumbers[i];
+            }
+            if (randomNumbers[i] < min) {
+                min = randomNumbers[i];
+            }
+        }
+    %>
+    <p>Random Numbers:</p>
+    <ul>
+        <% for (int i = 0; i < 8; i++) { %>
+            <li><%= randomNumbers[i] %></li>
+        <% } %>
+    </ul>
+    <p>Maximum Value: <%= max %></p>
+    <p>Minimum Value: <%= min %></p>
+</body>
+</html>
+
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<%
+	
+	
+	int lines = 5;
+
+	for (int i = lines; i > 0; i--) {
+		for (int j = 1; j <= i; j++) {
+			out.print(j);
+		}
+		out.println("<br />");
+	}
+	%>
+</body>
+</html>
+
+
